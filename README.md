@@ -346,3 +346,89 @@ Restart bind9
 ```
 service bind9 restart
 ```
+# No. 6
+> Beberapa daerah memiliki keterbatasan yang menyebabkan hanya dapat mengakses domain secara langsung melalui alamat IP domain tersebut. Karena daerah tersebut tidak diketahui secara spesifik, pastikan semua komputer (client) dapat mengakses domain pasopati.xxxx.com melalui alamat IP Kotalingga (Notes: menggunakan pointer record).
+
+
+## Setup DNS @ Sriwijaya
+
+Update package lists
+```
+apt-get update -y
+```
+Install bind9
+```
+ apt-get install bind9 -y
+```
+Configure domain in ```/etc/bind/named.conf.local``` file
+```
+nano /etc/bind/named.conf.local
+```
+Write the domain configuration in ```/etc/bind/named.conf.local```
+```
+zone "pasopati.it04.com" {
+    type master;
+    file "/etc/bind/it04/pasopati.it04.com";
+};
+
+zone "2.235.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/it04/192.235.2";
+};
+
+```
+Create /etc/bind/it04 directory
+```
+mkdir /etc/bind/it04
+```
+Copy db.local file to it04 folder that was made
+```
+cp /etc/bind/db.local /etc/bind/it04/pasopati.it04.com
+
+```
+Edit the DNS record
+```
+nano /etc/bind/it04/pasopati.it04.com
+```
+Edit file /etc/bind/it04/rujapala.it04.com as follows:
+```
+;
+; BIND data file for pasopati.it04.com
+;
+$TTL    604800
+@       IN      SOA     pasopati.it04.com. root.pasopati.it04.com. (
+                            2         ; Serial
+                       604800         ; Refresh
+                        86400         ; Retry
+                      2419200         ; Expire
+                       604800 )       ; Negative Cache TTL
+;
+@       IN      NS      pasopati.it04.com.
+@       IN      A       192.235.2.6    ; IP Kotalingga
+www     IN      CNAME   pasopati.it04.com.
+
+```
+Edit the Reverse Zone for ``` 192.235.2 ```
+```
+nano /etc/bind/it04/192.235.2
+```
+Edit File : 
+```
+;
+; BIND reverse data file for 192.235.2
+;
+$TTL    604800
+@       IN      SOA     sriwijaya.it04.com. root.sriwijaya.it04.com. (
+                            2         ; Serial
+                       604800         ; Refresh
+                        86400         ; Retry
+                      2419200         ; Expire
+                       604800 )       ; Negative Cache TTL
+;
+@       IN      NS      sriwijaya.it04.com.
+6       IN      PTR     pasopati.it04.com.  ; Mengarah dari IP 192.235.2.6
+```
+Restart bind9
+```
+service bind9 restart
+```
