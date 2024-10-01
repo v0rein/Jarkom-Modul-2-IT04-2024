@@ -285,7 +285,7 @@ service bind9 restart
 > Markas pusat meminta dibuatnya domain khusus untuk menaruh informasi persenjataan dan suplai yang tersebar. Informasi dan suplai meme terbaru tersebut mengarah ke Tanjungkulai dan domain yang ingin digunakan adalah rujapala.xxxx.com dengan alias www.rujapala.xxxx.com.
 
 
-## Setup DNS @ Pochinki
+## Setup DNS @ Sriwijaya
 
 Update package lists
 ```
