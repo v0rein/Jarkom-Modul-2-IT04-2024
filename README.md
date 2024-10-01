@@ -29,10 +29,7 @@
 
 
 # No. 1
-> Untuk membantu pertempuran di Erangel, kamu ditugaskan untuk membuat jaringan komputer yang akan digunakan sebagai alat komunikasi. Sesuaikan rancangan Topologi dengan rancangan dan pembagian yang berada di link yang telah > disediakan, dengan ketentuan nodenya sebagai berikut:
-> - DNS Master akan diberi nama Pochinki, sesuai dengan kota tempat dibuatnya server tersebut
-> - Karena ada kemungkinan musuh akan mencoba menyerang Server Utama, maka buatlah DNS Slave Georgopol yang mengarah ke Pochinki
-> - Markas pusat juga meminta dibuatkan tiga Web Server yaitu Severny, Stalber, dan Lipovka. Sedangkan Mylta akan bertindak sebagai Load Balancer untuk server-server tersebut
+> Untuk mempersiapkan peperangan World War MMXXIV (Iya sebanyak itu), Sriwijaya membuat dua kotanya menjadi web server yaitu Tanjungkulai, dan Bedahulu, serta Sriwijaya sendiri akan menjadi DNS Master. Kemudian karena merasa terdesak, Majapahit memberikan bantuan dan menjadikan kerajaannya (Majapahit) menjadi DNS Slave. 
 
 
 On each node, configure network.
@@ -154,3 +151,197 @@ iface eth0 inet static
 ip a
 ```
 ![image](https://github.com/user-attachments/assets/25c4fda2-1f8b-46a1-98a3-1db252afe0f4)
+
+# No. 2
+>Karena para pasukan membutuhkan koordinasi untuk melancarkan serangannya, maka buatlah sebuah domain yang mengarah ke Solok dengan alamat sudarsana.xxxx.com dengan alias www.sudarsana.xxxx.com, dimana xxxx merupakan kode kelompok. Contoh: sudarsana.it01.com
+
+## Setup DNS @ Sriwijaya
+
+Update package lists
+```
+apt-get update -y
+```
+Install bind9
+```
+ apt-get install bind9 -y
+```
+Configure domain in ```/etc/bind/named.conf.local``` file
+```
+nano /etc/bind/named.conf.local
+```
+Write the domain configuration in ```/etc/bind/named.conf.local```
+```
+zone "sudarsana.it04.com" {
+	type master;
+	file "/etc/bind/it04/sudarsana.it04.com";
+};
+```
+Create /etc/bind/it04 directory
+```
+mkdir /etc/bind/it04
+```
+Copy db.local file to it04 folder that was made
+```
+cp /etc/bind/db.local /etc/bind/it04/sudarsana.it04.com
+```
+Edit the DNS record
+```
+nano /etc/bind/it04/sudarsana.it04.com
+```
+Edit file /etc/bind/it04/sudarsana.it04.com as follows:
+```
+;
+; BIND data file for sudarsana.it04.com
+;
+$TTL    604800
+@       IN      SOA     sudarsana.it04.com. root.sudarsana.it04.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      sudarsana.it04.com.
+@       IN      A       192.235.1.3
+@       IN      AAAA    ::1
+www     IN      CNAME   sudarsana.it04.com
+```
+- Specify hostname in NS records: sudarsana.it04.com.
+- Specify address in A records: 192.235.1.3
+- Specify canonical name (alias) in CNAME records: sudarsana.it04.com.
+
+
+Restart bind9
+```
+service bind9 restart
+```
+
+
+# No. 3
+> Para pasukan juga perlu mengetahui mana titik yang akan diserang, sehingga dibutuhkan domain lain yaitu pasopati.xxxx.com dengan alias www.pasopati.xxxx.com yang mengarah ke Kotalingga.
+
+## Setup DNS @ Sriwijaya
+
+Update package lists
+```
+apt-get update -y
+```
+Install bind9
+```
+ apt-get install bind9 -y
+```
+Configure domain in ```/etc/bind/named.conf.local``` file
+```
+nano /etc/bind/named.conf.local
+```
+Write the domain configuration in ```/etc/bind/named.conf.local```
+```
+zone "pasopati.it04.com" {
+	type master;
+	file "/etc/bind/it04/pasopati.it04.com";
+};
+```
+Create /etc/bind/it04 directory
+```
+mkdir /etc/bind/it04
+```
+Copy db.local file to it04 folder that was made
+```
+cp /etc/bind/db.local /etc/bind/it04/pasopati.it04.com
+```
+Edit the DNS record
+```
+nano /etc/bind/it04/pasopati.it04.com
+```
+Edit file /etc/bind/it04/pasopati.it04.com as follows:
+```
+;
+; BIND data file for pasopati.it04.com
+;
+$TTL    604800
+@       IN      SOA     pasopati.it04.com. root.pasopati.it04.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      pasopati.it04.com.
+@       IN      A       192.235.2.6
+@       IN      AAAA    ::1
+www     IN      CNAME   pasopati.it04.com
+```
+- Specify hostname in NS records: pasopati.it04.com.
+- Specify address in A records: 192.235.2.6
+- Specify canonical name (alias) in CNAME records: pasopati.it04.com.
+
+
+Restart bind9
+```
+service bind9 restart
+```
+
+# No. 4
+> Markas pusat meminta dibuatnya domain khusus untuk menaruh informasi persenjataan dan suplai yang tersebar. Informasi dan suplai meme terbaru tersebut mengarah ke Tanjungkulai dan domain yang ingin digunakan adalah rujapala.xxxx.com dengan alias www.rujapala.xxxx.com.
+
+
+## Setup DNS @ Pochinki
+
+Update package lists
+```
+apt-get update -y
+```
+Install bind9
+```
+ apt-get install bind9 -y
+```
+Configure domain in ```/etc/bind/named.conf.local``` file
+```
+nano /etc/bind/named.conf.local
+```
+Write the domain configuration in ```/etc/bind/named.conf.local```
+```
+zone "rujapala.it04.com" {
+	type master;
+	file "/etc/bind/it04/rujapala.it04.com";
+};
+```
+Create /etc/bind/it04 directory
+```
+mkdir /etc/bind/it04
+```
+Copy db.local file to it04 folder that was made
+```
+cp /etc/bind/db.local /etc/bind/it04/rujapala.it04.com
+```
+Edit the DNS record
+```
+nano /etc/bind/it04/rujapala.it04.com
+```
+Edit file /etc/bind/it04/rujapala.it04.com as follows:
+```
+;
+; BIND data file for rajapala.it04.com
+;
+\$TTL    604800
+@       IN      SOA     rajapala.it04.com. root.rajapala.it04.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      rajapala.it04.com.
+@       IN      A       192.235.3.3
+@       IN      AAAA    ::1
+www     IN      CNAME   rajapala.it04.com
+```
+- Specify hostname in NS records: rujapala.it04.com.
+- Specify address in A records: 192.235.3.3
+- Specify canonical name (alias) in CNAME records: rujapala.it04.com.
+
+
+Restart bind9
+```
+service bind9 restart
+```
