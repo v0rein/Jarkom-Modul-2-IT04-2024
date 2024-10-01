@@ -3,6 +3,7 @@
 |Nama  | NRP |
 |--|--|
 | Dionisius Marcell Putra Indranto | 502723044 |
+| Aswalia Novitriasari		   | 5027231012|
 
 ## Topologi
 ![image](https://github.com/user-attachments/assets/bbd3962d-1c5e-47fc-b400-5b4ec2e9cdfc)
