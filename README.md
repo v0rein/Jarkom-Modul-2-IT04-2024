@@ -346,6 +346,7 @@ Restart bind9
 ```
 service bind9 restart
 ```
+
 # No. 6
 > Beberapa daerah memiliki keterbatasan yang menyebabkan hanya dapat mengakses domain secara langsung melalui alamat IP domain tersebut. Karena daerah tersebut tidak diketahui secara spesifik, pastikan semua komputer (client) dapat mengakses domain pasopati.xxxx.com melalui alamat IP Kotalingga (Notes: menggunakan pointer record).
 
@@ -432,3 +433,67 @@ Restart bind9
 ```
 service bind9 restart
 ```
+
+# No. 7
+> Akhir-akhir ini seringkali terjadi serangan brainrot ke DNS Server Utama, sebagai tindakan antisipasi kamu diperintahkan untuk membuat DNS Slave di Majapahit untuk semua domain yang sudah dibuat sebelumnya yang mengarah ke Sriwijaya.
+
+## Setup DNS @ Majapahit
+
+Update package lists
+```
+apt-get update -y
+```
+Install bind9 and dnsutils
+```
+apt-get install bind9 dnsutils -y
+```
+Edit the DNS configuration in /etc/bind/named.conf.local
+```
+nano /etc/bind/named.conf.local
+```
+Add the zones for pasopati.it04.com and rujapala.it04.com as follows:
+```
+zone "pasopati.it04.com" {
+    type slave;
+    file "/etc/bind/slave/pasopati.it04.com";
+    masters { 192.235.2.6; }; // IP of the DNS Master at Sriwijaya
+};
+
+zone "rujapala.it04.com" {
+    type slave;
+    file "/etc/bind/slave/rujapala.it04.com";
+    masters { 192.235.2.6; }; // IP of the DNS Master at Sriwijaya
+};
+
+zone "2.235.192.in-addr.arpa" {
+    type slave;
+    file "/etc/bind/slave/2.235.192.in-addr.arpa";
+    masters { 192.235.2.6; }; // IP of the DNS Master at Sriwijaya
+};
+```
+Create a directory to store the slave files
+```
+mkdir /etc/bind/slave
+```
+Create /etc/bind/it04 directory
+```
+mkdir /etc/bind/it04
+```
+Restart bind9
+```
+service bind9 restart
+```
+Verify DNS Slave Configuration
+```
+named-checkconf
+named-checkzone pasopati.it04.com /etc/bind/slave/pasopati.it04.com
+named-checkzone rujapala.it04.com /etc/bind/slave/rujapala.it04.com
+named-checkzone 2.235.192.in-addr.arpa /etc/bind/slave/2.235.192.in-addr.arpa
+```
+Test the DNS Slave using nslookup
+```
+nslookup pasopati.it04.com
+nslookup rujapala.it04.com
+```
+
+
