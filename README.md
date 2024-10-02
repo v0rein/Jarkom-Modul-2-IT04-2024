@@ -367,15 +367,10 @@ nano /etc/bind/named.conf.local
 ```
 Write the domain configuration in ```/etc/bind/named.conf.local```
 ```
-zone "pasopati.it04.com" {
+echo "zone \"pasopati.it04.com\" {
     type master;
-    file "/etc/bind/it04/pasopati.it04.com";
-};
-
-zone "2.235.192.in-addr.arpa" {
-    type master;
-    file "/etc/bind/it04/192.235.2";
-};
+    file \"/etc/bind/it04/pasopati.it04.com\";
+};" >> /etc/bind/named.conf.local
 
 ```
 Create /etc/bind/it04 directory
@@ -393,10 +388,40 @@ nano /etc/bind/it04/pasopati.it04.com
 ```
 Edit file /etc/bind/it04/rujapala.it04.com as follows:
 ```
-;
 ; BIND data file for pasopati.it04.com
-;
 $TTL    604800
+@       IN      SOA     pasopati.it04.com. root.pasopati.it04.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      pasopati.it04.com.
+@       IN      A       192.235.2.6
+@       IN      AAAA    ::1
+www     IN      CNAME   pasopati.it04.com
+
+```
+Add Reverse Zone Configuration: Add the reverse zone to ``` /etc/bind/named.conf.local ``` :
+```
+nano /etc/bind/named.conf.local
+```
+Edit File : 
+```
+zone "2.235.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/it04/192.235.2";
+};
+
+```
+Create the Reverse Zone File: Create the reverse zone file
+```
+nano /etc/bind/it04/192.235.2
+```
+edit file :
+```
+\$TTL    604800
 @       IN      SOA     pasopati.it04.com. root.pasopati.it04.com. (
                             2         ; Serial
                        604800         ; Refresh
@@ -405,35 +430,35 @@ $TTL    604800
                        604800 )       ; Negative Cache TTL
 ;
 @       IN      NS      pasopati.it04.com.
-@       IN      A       192.235.2.6    ; IP Kotalingga
-www     IN      CNAME   pasopati.it04.com.
+6       IN      PTR     pasopati.it04.com.
+```
+Edit the Logging Configuration: Add logging options in ``` /etc/bind/named.conf ```:
+```
+options {
+    directory "/var/cache/bind";
 
-```
-Edit the Reverse Zone for ``` 192.235.2 ```
-```
-nano /etc/bind/it04/192.235.2
-```
-Edit File : 
-```
-;
-; BIND reverse data file for 192.235.2
-;
-$TTL    604800
-@       IN      SOA     sriwijaya.it04.com. root.sriwijaya.it04.com. (
-                            2         ; Serial
-                       604800         ; Refresh
-                        86400         ; Retry
-                      2419200         ; Expire
-                       604800 )       ; Negative Cache TTL
-;
-@       IN      NS      sriwijaya.it04.com.
-6       IN      PTR     pasopati.it04.com.  ; Mengarah dari IP 192.235.2.6
+    logging {
+        channel default_log {
+            file "/var/log/named/bind.log";
+            severity info;
+            print-time yes;
+        };
+        category default { default_log; };
+    };
+};
 ```
 Restart bind9
 ```
 service bind9 restart
 ```
-![Screenshot 2024-10-01 180929](https://github.com/user-attachments/assets/550843f5-0378-4026-aaae-1e991de4446e)
+Ping the Domain: Test the DNS resolution by pinging:
+```
+ping pasopati.it04.com
+ping rujapala.it04.com
+```
+
+![Screenshot 2024-10-03 010931](https://github.com/user-attachments/assets/6254789e-aa1e-4b7c-af5f-de33fc7790e3)
+masih gagal.
 
 # No. 7
 > Akhir-akhir ini seringkali terjadi serangan brainrot ke DNS Server Utama, sebagai tindakan antisipasi kamu diperintahkan untuk membuat DNS Slave di Majapahit untuk semua domain yang sudah dibuat sebelumnya yang mengarah ke Sriwijaya.
