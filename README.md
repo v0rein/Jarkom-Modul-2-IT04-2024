@@ -493,8 +493,8 @@ named-checkzone 2.235.192.in-addr.arpa /etc/bind/slave/2.235.192.in-addr.arpa
 ```
 Test the DNS Slave using nslookup
 ```
-nslookup pasopati.it04.com
-nslookup rujapala.it04.com
+ping pasopati.it04.com
+ping rujapala.it04.com
 ```
 ![Screenshot 2024-10-02 152218](https://github.com/user-attachments/assets/d1af817d-678f-49c5-9efe-946d381ce0c5)
 
@@ -572,7 +572,7 @@ named-checkzone cakra.sudarsana.it04.com /etc/bind/it04/cakra.sudarsana.it04.com
 ```
 Test the DNS Slave using nslookup
 ```
-nslookup cakra.sudarsana.it04.com
+ping cakra.sudarsana.it04.com
 ```
-![Screenshot 2024-10-02 155339](https://github.com/user-attachments/assets/d852292c-1142-433e-8aa8-5c4e808cff43)
+![Screenshot 2024-10-02 235548](https://github.com/user-attachments/assets/94a62dcf-f489-4867-b6ce-a61efb625538)
 
