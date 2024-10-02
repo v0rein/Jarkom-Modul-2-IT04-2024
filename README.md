@@ -454,7 +454,6 @@ service bind9 restart
 Ping the Domain: Test the DNS resolution by pinging:
 ```
 ping pasopati.it04.com
-ping rujapala.it04.com
 ```
 
 ![Screenshot 2024-10-03 010931](https://github.com/user-attachments/assets/6254789e-aa1e-4b7c-af5f-de33fc7790e3)
@@ -521,7 +520,6 @@ Test the DNS Slave using nslookup
 ping pasopati.it04.com
 ping rujapala.it04.com
 ```
-![Screenshot 2024-10-02 152218](https://github.com/user-attachments/assets/d1af817d-678f-49c5-9efe-946d381ce0c5)
 
 # No. 8
 > Kamu juga diperintahkan untuk membuat subdomain khusus melacak kekuatan tersembunyi di Ohio dengan subdomain cakra.sudarsana.xxxx.com yang mengarah ke Bedahulu.
@@ -599,5 +597,5 @@ Test the DNS Slave using nslookup
 ```
 ping cakra.sudarsana.it04.com
 ```
-![Screenshot 2024-10-02 235548](https://github.com/user-attachments/assets/94a62dcf-f489-4867-b6ce-a61efb625538)
+
 
