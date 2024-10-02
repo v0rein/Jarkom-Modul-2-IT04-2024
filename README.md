@@ -433,6 +433,7 @@ Restart bind9
 ```
 service bind9 restart
 ```
+![Screenshot 2024-10-01 180929](https://github.com/user-attachments/assets/550843f5-0378-4026-aaae-1e991de4446e)
 
 # No. 7
 > Akhir-akhir ini seringkali terjadi serangan brainrot ke DNS Server Utama, sebagai tindakan antisipasi kamu diperintahkan untuk membuat DNS Slave di Majapahit untuk semua domain yang sudah dibuat sebelumnya yang mengarah ke Sriwijaya.
@@ -495,8 +496,9 @@ Test the DNS Slave using nslookup
 nslookup pasopati.it04.com
 nslookup rujapala.it04.com
 ```
+![Screenshot 2024-10-02 152218](https://github.com/user-attachments/assets/d1af817d-678f-49c5-9efe-946d381ce0c5)
 
-# No. 7
+# No. 8
 > Kamu juga diperintahkan untuk membuat subdomain khusus melacak kekuatan tersembunyi di Ohio dengan subdomain cakra.sudarsana.xxxx.com yang mengarah ke Bedahulu.
 
 ## Setup DNS @ Sriwijaya
@@ -572,4 +574,5 @@ Test the DNS Slave using nslookup
 ```
 nslookup cakra.sudarsana.it04.com
 ```
+![Screenshot 2024-10-02 155339](https://github.com/user-attachments/assets/d852292c-1142-433e-8aa8-5c4e808cff43)
 
