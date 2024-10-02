@@ -496,4 +496,80 @@ nslookup pasopati.it04.com
 nslookup rujapala.it04.com
 ```
 
+# No. 7
+> Kamu juga diperintahkan untuk membuat subdomain khusus melacak kekuatan tersembunyi di Ohio dengan subdomain cakra.sudarsana.xxxx.com yang mengarah ke Bedahulu.
+
+## Setup DNS @ Sriwijaya
+
+Update package lists
+```
+apt-get update -y
+```
+Install bind9 and dnsutils
+```
+apt-get install bind9 dnsutils -y
+```
+Edit the DNS configuration in /etc/bind/named.conf.local
+```
+nano /etc/bind/named.conf.local
+```
+Add the following zone configuration to ``` named.conf.local ``` :
+```
+zone "cakra.sudarsana.it04.com" {
+    type master;
+    file "/etc/bind/it04/cakra.sudarsana.it04.com";
+};
+
+```
+Create /etc/bind/it04 directory
+```
+mkdir /etc/bind/it04
+```
+Create the Zone File for the Subdomain
+
+Copy the template DNS record file to the new location:
+```
+cp /etc/bind/db.local /etc/bind/it04/cakra.sudarsana.it04.com
+```
+Restart bind9
+```
+service bind9 restart
+```
+Edit the DNS Record File
+
+Open the newly created zone file for editing:
+```
+nano /etc/bind/it04/cakra.sudarsana.it04.com
+
+```
+Modify the contents to reflect the DNS records for ``` cakra.sudarsana.it04.com ``` :
+```
+;
+; BIND data file for cakra.sudarsana.it04.com
+;
+$TTL    604800
+@       IN      SOA     cakra.sudarsana.it04.com. root.cakra.sudarsana.it04.com. (
+                          1         ; Serial
+                      604800         ; Refresh
+                       86400         ; Retry
+                     2419200         ; Expire
+                      604800 )       ; Negative Cache TTL
+;
+@       IN      NS      cakra.sudarsana.it04.com.
+@       IN      A       192.235.2.6     ; IP of Bedahulu
+
+```
+Restart bind9
+```
+service bind9 restart
+```
+Verify DNS Slave Configuration
+```
+named-checkconf
+named-checkzone cakra.sudarsana.it04.com /etc/bind/it04/cakra.sudarsana.it04.com
+```
+Test the DNS Slave using nslookup
+```
+nslookup cakra.sudarsana.it04.com
+```
 
