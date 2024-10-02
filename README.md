@@ -27,8 +27,6 @@
 | **Balaraja**   | eth0      | 192.235.2.5| 255.255.255.0 | 192.235.2.2 |
 | **Kotalingga**| eth0    | 192.235.2.6| 255.255.255.0 | 192.235.2.2 |
 
-
-
 # No. 1
 > Untuk mempersiapkan peperangan World War MMXXIV (Iya sebanyak itu), Sriwijaya membuat dua kotanya menjadi web server yaitu Tanjungkulai, dan Bedahulu, serta Sriwijaya sendiri akan menjadi DNS Master. Kemudian karena merasa terdesak, Majapahit memberikan bantuan dan menjadikan kerajaannya (Majapahit) menjadi DNS Slave. 
 
@@ -146,6 +144,38 @@ iface eth0 inet static
 	netmask 255.255.255.0
 	gateway 192.235.2.2
 ```
+## Setup /root/.bashrc
+
+- Router
+```
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 192.235.0.0/16
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+```
+
+- DNS Master
+```
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+
+apt-get update
+apt-get install bind9 -y
+```
+
+-DNS Slave
+```
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+
+apt-get update
+apt-get install bind9 -y
+```
+
+-Client
+```
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt-get update
+apt-get install dnsutils -y
+apt-get install lynx -y
+echo nameserver 192.235.2.1 > /etc/resolv.conf
+```
 
 ## Check IP address
 ```
@@ -157,42 +187,22 @@ ip a
 >Karena para pasukan membutuhkan koordinasi untuk melancarkan serangannya, maka buatlah sebuah domain yang mengarah ke Solok dengan alamat sudarsana.xxxx.com dengan alias www.sudarsana.xxxx.com, dimana xxxx merupakan kode kelompok. Contoh: sudarsana.it01.com
 
 ## Setup DNS @ Sriwijaya
+```
+echo 'zone "sudarsana.it04.com" {
+    type master;
+    notify yes;
+	  also-notify { 192.235.3.1; };
+    allow-transfer { 192.235.3.1; };
+    file "/etc/bind/it04/sudarsana.it04.com";
+};' >>   /etc/bind/named.conf.local
 
-Update package lists
-```
-apt-get update -y
-```
-Install bind9
-```
- apt-get install bind9 -y
-```
-Configure domain in ```/etc/bind/named.conf.local``` file
-```
-nano /etc/bind/named.conf.local
-```
-Write the domain configuration in ```/etc/bind/named.conf.local```
-```
-zone "sudarsana.it04.com" {
-	type master;
-	file "/etc/bind/it04/sudarsana.it04.com";
-};
-```
-Create /etc/bind/it04 directory
-```
 mkdir /etc/bind/it04
-```
-Copy db.local file to it04 folder that was made
-```
+
 cp /etc/bind/db.local /etc/bind/it04/sudarsana.it04.com
-```
-Edit the DNS record
-```
-nano /etc/bind/it04/sudarsana.it04.com
-```
-Edit file /etc/bind/it04/sudarsana.it04.com as follows:
-```
+
+echo '
 ;
-; BIND data file for sudarsana.it04.com
+; BIND data file for local loopback interface
 ;
 $TTL    604800
 @       IN      SOA     sudarsana.it04.com. root.sudarsana.it04.com. (
@@ -205,15 +215,8 @@ $TTL    604800
 @       IN      NS      sudarsana.it04.com.
 @       IN      A       192.235.1.3
 @       IN      AAAA    ::1
-www     IN      CNAME   sudarsana.it04.com
-```
-- Specify hostname in NS records: sudarsana.it04.com.
-- Specify address in A records: 192.235.1.3
-- Specify canonical name (alias) in CNAME records: sudarsana.it04.com.
+www     IN      CNAME   sudarsana.it04.com.' > /etc/bind/it04/sudarsana.it04.com
 
-
-Restart bind9
-```
 service bind9 restart
 ```
 
@@ -222,42 +225,22 @@ service bind9 restart
 > Para pasukan juga perlu mengetahui mana titik yang akan diserang, sehingga dibutuhkan domain lain yaitu pasopati.xxxx.com dengan alias www.pasopati.xxxx.com yang mengarah ke Kotalingga.
 
 ## Setup DNS @ Sriwijaya
+```
+echo 'zone "pasopati.it04.com" {
+    type master;
+    notify yes;
+	  also-notify { 192.235.3.1; };
+    allow-transfer { 192.235.3.1; };
+    file "/etc/bind/it04/pasopati.it04.com";
+};' >> /etc/bind/named.conf.local
 
-Update package lists
-```
-apt-get update -y
-```
-Install bind9
-```
- apt-get install bind9 -y
-```
-Configure domain in ```/etc/bind/named.conf.local``` file
-```
-nano /etc/bind/named.conf.local
-```
-Write the domain configuration in ```/etc/bind/named.conf.local```
-```
-zone "pasopati.it04.com" {
-	type master;
-	file "/etc/bind/it04/pasopati.it04.com";
-};
-```
-Create /etc/bind/it04 directory
-```
 mkdir /etc/bind/it04
-```
-Copy db.local file to it04 folder that was made
-```
+
 cp /etc/bind/db.local /etc/bind/it04/pasopati.it04.com
-```
-Edit the DNS record
-```
-nano /etc/bind/it04/pasopati.it04.com
-```
-Edit file /etc/bind/it04/pasopati.it04.com as follows:
-```
+
+echo '
 ;
-; BIND data file for pasopati.it04.com
+; BIND data file for local loopback interface
 ;
 $TTL    604800
 @       IN      SOA     pasopati.it04.com. root.pasopati.it04.com. (
@@ -270,15 +253,8 @@ $TTL    604800
 @       IN      NS      pasopati.it04.com.
 @       IN      A       192.235.2.6
 @       IN      AAAA    ::1
-www     IN      CNAME   pasopati.it04.com
-```
-- Specify hostname in NS records: pasopati.it04.com.
-- Specify address in A records: 192.235.2.6
-- Specify canonical name (alias) in CNAME records: pasopati.it04.com.
+www     IN      CNAME   pasopati.it04.com.' > /etc/bind/it04/pasopati.it04.com
 
-
-Restart bind9
-```
 service bind9 restart
 ```
 
@@ -287,108 +263,195 @@ service bind9 restart
 
 
 ## Setup DNS @ Sriwijaya
+```
+echo 'zone "rujapala.it04.com" {
+    type master;
+    notify yes;
+	  also-notify { 192.235.3.1; };
+    allow-transfer { 192.235.3.1; };
+    file "/etc/bind/it04/rujapala.it04.com";
+};' >> /etc/bind/named.conf.local
 
-Update package lists
-```
-apt-get update -y
-```
-Install bind9
-```
- apt-get install bind9 -y
-```
-Configure domain in ```/etc/bind/named.conf.local``` file
-```
-nano /etc/bind/named.conf.local
-```
-Write the domain configuration in ```/etc/bind/named.conf.local```
-```
-zone "rujapala.it04.com" {
-	type master;
-	file "/etc/bind/it04/rujapala.it04.com";
-};
-```
-Create /etc/bind/it04 directory
-```
 mkdir /etc/bind/it04
-```
-Copy db.local file to it04 folder that was made
-```
+
 cp /etc/bind/db.local /etc/bind/it04/rujapala.it04.com
-```
-Edit the DNS record
-```
-nano /etc/bind/it04/rujapala.it04.com
-```
-Edit file /etc/bind/it04/rujapala.it04.com as follows:
-```
+
+echo '
 ;
-; BIND data file for rajapala.it04.com
+; BIND data file for local loopback interface
 ;
-\$TTL    604800
-@       IN      SOA     rajapala.it04.com. root.rajapala.it04.com. (
+$TTL    604800
+@       IN      SOA     rujapala.it04.com. root.rujapala.it04.com. (
                               2         ; Serial
                          604800         ; Refresh
                           86400         ; Retry
                         2419200         ; Expire
                          604800 )       ; Negative Cache TTL
 ;
-@       IN      NS      rajapala.it04.com.
+@       IN      NS      rujapala.it04.com.
 @       IN      A       192.235.3.3
 @       IN      AAAA    ::1
-www     IN      CNAME   rajapala.it04.com
-```
-- Specify hostname in NS records: rujapala.it04.com.
-- Specify address in A records: 192.235.3.3
-- Specify canonical name (alias) in CNAME records: rujapala.it04.com.
+www     IN      CNAME   rujapala.it04.com.' > /etc/bind/it04/rujapala.it04.com
 
-
-Restart bind9
-```
 service bind9 restart
 ```
+
+# No.5
+> Pastikan domain-domain tersebut dapat diakses oleh seluruh komputer (client) yang berada di Nusantara.
 
 # No. 6
 > Beberapa daerah memiliki keterbatasan yang menyebabkan hanya dapat mengakses domain secara langsung melalui alamat IP domain tersebut. Karena daerah tersebut tidak diketahui secara spesifik, pastikan semua komputer (client) dapat mengakses domain pasopati.xxxx.com melalui alamat IP Kotalingga (Notes: menggunakan pointer record).
 
+## Setup DNS @ Sriwijaya
+```
+echo 'zone "2.235.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/it04/2.235.192.in-addr.arpa";
+};' >> /etc/bind/named.conf.local
+
+mkdir /etc/bind/it04
+
+cp /etc/bind/db.local /etc/bind/it04/2.235.192.in-addr.arpa
+
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     pasopati.it04.com. root.pasopati.it04.com (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+2.235.192.in-addr.arpa.      IN      NS      pasopati.it04.com.
+6                            IN      PTR     pasopati.it04.com.' > /etc/bind/it04/2.235.192.in-addr.arpa
+
+service bind9 restart
+```
+
+# No. 7
+> Akhir-akhir ini seringkali terjadi serangan brainrot ke DNS Server Utama, sebagai tindakan antisipasi kamu diperintahkan untuk membuat DNS Slave di Majapahit untuk semua domain yang sudah dibuat sebelumnya yang mengarah ke Sriwijaya.
+
+## Setup DNS @ Majapahit
+```
+echo 'zone "sudarsana.it04.com" {
+    type slave;
+    masters { 192.235.2.1; };
+    file "/var/lib/bind/sudarsana.it04.com";
+};
+
+zone "pasopati.it04.com" {
+    type slave;
+    masters { 192.235.2.1; };
+    file "/var/lib/bind/pasopati.it04.com";
+};
+
+zone "rujapala.it04.com" {
+    type slave;
+    masters { 192.235.2.1; };
+    file "/var/lib/bind/rujapala.it04.com";
+};' > /etc/bind/named.conf.local
+
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     sudarsana.it04.com. root.sudarsana.it04.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      sudarsana.it04.com.
+@       IN      A       192.235.2.1
+@       IN      AAAA    ::1
+www     IN      CNAME   sudarsana.it04.com.' > /var/lib/bind/sudarsana.it04.com
+
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     pasopati.it04.com. root.pasopati.it04.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      pasopati.it04.com.
+@       IN      A       192.235.2.1
+@       IN      AAAA    ::1
+www     IN      CNAME   pasopati.it04.com.' > /var/lib/bind/pasopati.it04.com
+
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     rujapala.it04.com. root.rujapala.it04.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      rujapala.it04.com.
+@       IN      A       192.235.2.1
+@       IN      AAAA    ::1
+www     IN      CNAME   rujapala.it04.com.' > /var/lib/bind/rujapala.it04.com
+
+# Restart BIND9 service to apply changes
+service bind9 restart
+```
+
+# No. 8
+> Kamu juga diperintahkan untuk membuat subdomain khusus melacak kekuatan tersembunyi di Ohio dengan subdomain cakra.sudarsana.xxxx.com yang mengarah ke Bedahulu.
 
 ## Setup DNS @ Sriwijaya
+```
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     sudarsana.it04.com. root.sudarsana.it04.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      sudarsana.it04.com.
+@       IN      A       192.235.1.3
+cakra   IN      A       192.235.3.4
+@       IN      AAAA    ::1
+www     IN      CNAME   sudarsana.it04.com.' > /etc/bind/it04/sudarsana.it04.com
 
-Update package lists
+service bind9 restart
 ```
-apt-get update -y
-```
-Install bind9
-```
- apt-get install bind9 -y
-```
-Configure domain in ```/etc/bind/named.conf.local``` file
-```
-nano /etc/bind/named.conf.local
-```
-Write the domain configuration in ```/etc/bind/named.conf.local```
-```
-echo "zone \"pasopati.it04.com\" {
-    type master;
-    file \"/etc/bind/it04/pasopati.it04.com\";
-};" >> /etc/bind/named.conf.local
 
-```
-Create /etc/bind/it04 directory
-```
-mkdir /etc/bind/it04
-```
-Copy db.local file to it04 folder that was made
-```
-cp /etc/bind/db.local /etc/bind/it04/pasopati.it04.com
+# No. 9
+> Karena terjadi serangan DDOS oleh shikanoko nokonoko koshitantan (NUN), sehingga sistem komunikasinya terhalang. Untuk melindungi warga, kita diperlukan untuk membuat sistem peringatan dari siren man oleh Frekuensi Freak dan memasukkannya ke subdomain panah.pasopati.xxxx.com dalam folder panah dan pastikan dapat diakses secara mudah dengan menambahkan alias www.panah.pasopati.xxxx.com dan mendelegasikan subdomain tersebut ke Majapahit dengan alamat IP menuju radar di Kotalingga.
 
+## Setup DNS @ Sriwijaya
 ```
-Edit the DNS record
-```
-nano /etc/bind/it04/pasopati.it04.com
-```
-Edit file /etc/bind/it04/rujapala.it04.com as follows:
-```
-; BIND data file for pasopati.it04.com
+echo '
+options {
+  directory "var/cache/bind";
+  allow-query {any;};
+  auth-nxdomain no;
+  listen-on-v6 {any;}
+};' > /etc/bind/named.conf.options
+
+echo '
+;
+; BIND data file for local loopback interface
+;
 $TTL    604800
 @       IN      SOA     pasopati.it04.com. root.pasopati.it04.com. (
                               2         ; Serial
@@ -400,202 +463,96 @@ $TTL    604800
 @       IN      NS      pasopati.it04.com.
 @       IN      A       192.235.2.6
 @       IN      AAAA    ::1
-www     IN      CNAME   pasopati.it04.com
+www     IN      CNAME   pasopati.it04.com.
+kotalingga  IN  A       192.235.2.6
+ns1     IN      A       192.235.3.1
+panah   IN      NS      ns1' > /etc/bind/it04/pasopati.it04.com
 
-```
-Add Reverse Zone Configuration: Add the reverse zone to ``` /etc/bind/named.conf.local ``` :
-```
-nano /etc/bind/named.conf.local
-```
-Edit File : 
-```
-zone "2.235.192.in-addr.arpa" {
-    type master;
-    file "/etc/bind/it04/192.235.2";
-};
-
-```
-Create the Reverse Zone File: Create the reverse zone file
-```
-nano /etc/bind/it04/192.235.2
-```
-edit file :
-```
-\$TTL    604800
-@       IN      SOA     pasopati.it04.com. root.pasopati.it04.com. (
-                            2         ; Serial
-                       604800         ; Refresh
-                        86400         ; Retry
-                      2419200         ; Expire
-                       604800 )       ; Negative Cache TTL
-;
-@       IN      NS      pasopati.it04.com.
-6       IN      PTR     pasopati.it04.com.
-```
-Edit the Logging Configuration: Add logging options in ``` /etc/bind/named.conf ```:
-```
-options {
-    directory "/var/cache/bind";
-
-    logging {
-        channel default_log {
-            file "/var/log/named/bind.log";
-            severity info;
-            print-time yes;
-        };
-        category default { default_log; };
-    };
-};
-```
-Restart bind9
-```
 service bind9 restart
 ```
-Ping the Domain: Test the DNS resolution by pinging:
-```
-ping pasopati.it04.com
-```
-
-![Screenshot 2024-10-03 010931](https://github.com/user-attachments/assets/6254789e-aa1e-4b7c-af5f-de33fc7790e3)
-masih gagal.
-
-# No. 7
-> Akhir-akhir ini seringkali terjadi serangan brainrot ke DNS Server Utama, sebagai tindakan antisipasi kamu diperintahkan untuk membuat DNS Slave di Majapahit untuk semua domain yang sudah dibuat sebelumnya yang mengarah ke Sriwijaya.
-
 ## Setup DNS @ Majapahit
+```
+echo '
+options {
+  directory "var/cache/bind";
+  allow-query {any;};
+  auth-nxdomain no;
+  listen-on-v6 {any;};
+};' > /etc/bind/named.conf.options
 
-Update package lists
-```
-apt-get update -y
-```
-Install bind9 and dnsutils
-```
-apt-get install bind9 dnsutils -y
-```
-Edit the DNS configuration in /etc/bind/named.conf.local
-```
-nano /etc/bind/named.conf.local
-```
-Add the zones for pasopati.it04.com and rujapala.it04.com as follows:
-```
-zone "pasopati.it04.com" {
-    type slave;
-    file "/etc/bind/slave/pasopati.it04.com";
-    masters { 192.235.2.6; }; // IP of the DNS Master at Sriwijaya
-};
+echo '
+zone "panah.pasopati.it04.com"{
+  type master;
+  file "/etc/bind/it04/panah.pasopati.it04.com";
+  };' >> /etc/bind/named.conf.local
 
-zone "rujapala.it04.com" {
-    type slave;
-    file "/etc/bind/slave/rujapala.it04.com";
-    masters { 192.235.2.6; }; // IP of the DNS Master at Sriwijaya
-};
-
-zone "2.235.192.in-addr.arpa" {
-    type slave;
-    file "/etc/bind/slave/2.235.192.in-addr.arpa";
-    masters { 192.235.2.6; }; // IP of the DNS Master at Sriwijaya
-};
-```
-Create a directory to store the slave files
-```
-mkdir /etc/bind/slave
-```
-Create /etc/bind/it04 directory
-```
 mkdir /etc/bind/it04
-```
-Restart bind9
-```
-service bind9 restart
-```
-Verify DNS Slave Configuration
-```
-named-checkconf
-named-checkzone pasopati.it04.com /etc/bind/slave/pasopati.it04.com
-named-checkzone rujapala.it04.com /etc/bind/slave/rujapala.it04.com
-named-checkzone 2.235.192.in-addr.arpa /etc/bind/slave/2.235.192.in-addr.arpa
-```
-Test the DNS Slave using nslookup
-```
-ping pasopati.it04.com
-ping rujapala.it04.com
-```
+cp /etc/bind/db.local /etc/bind/it04/panah.pasopati.it04.com
 
-# No. 8
-> Kamu juga diperintahkan untuk membuat subdomain khusus melacak kekuatan tersembunyi di Ohio dengan subdomain cakra.sudarsana.xxxx.com yang mengarah ke Bedahulu.
-
-## Setup DNS @ Sriwijaya
-
-Update package lists
-```
-apt-get update -y
-```
-Install bind9 and dnsutils
-```
-apt-get install bind9 dnsutils -y
-```
-Edit the DNS configuration in /etc/bind/named.conf.local
-```
-nano /etc/bind/named.conf.local
-```
-Add the following zone configuration to ``` named.conf.local ``` :
-```
-zone "cakra.sudarsana.it04.com" {
-    type master;
-    file "/etc/bind/it04/cakra.sudarsana.it04.com";
-};
-
-```
-Create /etc/bind/it04 directory
-```
-mkdir /etc/bind/it04
-```
-Create the Zone File for the Subdomain
-
-Copy the template DNS record file to the new location:
-```
-cp /etc/bind/db.local /etc/bind/it04/cakra.sudarsana.it04.com
-```
-Restart bind9
-```
-service bind9 restart
-```
-Edit the DNS Record File
-
-Open the newly created zone file for editing:
-```
-nano /etc/bind/it04/cakra.sudarsana.it04.com
-
-```
-Modify the contents to reflect the DNS records for ``` cakra.sudarsana.it04.com ``` :
-```
+echo '
 ;
-; BIND data file for cakra.sudarsana.it04.com
+; BIND data file for local loopback interface
 ;
 $TTL    604800
-@       IN      SOA     cakra.sudarsana.it04.com. root.cakra.sudarsana.it04.com. (
-                          1         ; Serial
-                      604800         ; Refresh
-                       86400         ; Retry
-                     2419200         ; Expire
-                      604800 )       ; Negative Cache TTL
+@       IN      SOA     panah.pasopati.it04.com. root.panah.pasopati.it04.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
 ;
-@       IN      NS      cakra.sudarsana.it04.com.
-@       IN      A       192.235.2.6     ; IP of Bedahulu
+@       IN      NS      panah.pasopati.it04.com.
+@       IN      A       192.235.3.1
+@       IN      AAAA    ::1
+www     IN      CNAME   panah.pasopati.it04.com.' > /etc/bind/it04/panah.pasopati.it04.com
 
-```
-Restart bind9
-```
 service bind9 restart
 ```
-Verify DNS Slave Configuration
+
+# No. 10
+> Markas juga meminta catatan kapan saja meme brain rot akan dijatuhkan, maka buatlah subdomain baru di subdomain panah yaitu log.panah.pasopati.xxxx.com serta aliasnya www.log.panah.pasopati.xxxx.com yang juga mengarah ke Kotalingga.
+## Setup DNS @ Sriwijaya
 ```
-named-checkconf
-named-checkzone cakra.sudarsana.it04.com /etc/bind/it04/cakra.sudarsana.it04.com
-```
-Test the DNS Slave using nslookup
-```
-ping cakra.sudarsana.it04.com
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     pasopati.it04.com. root.pasopati.it04.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      pasopati.it04.com.
+@       IN      A       192.235.2.6
+@       IN      AAAA    ::1
+www     IN      CNAME   pasopati.it04.com.
+kotalingga  IN  A       192.235.2.6
+log.panah IN    A       192.235.2.6
+www.log.panah   IN    CNAME   log.panah.pasopati.it04.com.' > /etc/bind/it04/pasopati.it04.com
+
+service bind9 restart
 ```
 
+# No. 11
+> Setelah pertempuran mereda, warga IT dapat kembali mengakses jaringan luar dan menikmati meme brainrot terbaru, tetapi hanya warga Majapahit saja yang dapat mengakses jaringan luar secara langsung. Buatlah konfigurasi agar warga IT yang berada diluar Majapahit dapat mengakses jaringan luar melalui DNS Server Majapahit.
+## Setup DNS @ Sriwijaya
+```
+echo ' options {
+        directory "/var/cache/bind";
 
+        forwarders {
+                8.8.8.8;
+                8.8.4.4;
+        };
+
+        dnssec-validation auto;
+
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+}; ' > /etc/bind/named.conf.options
+
+service bind9 restart
+```
