@@ -667,20 +667,44 @@ Balaraja
 > Karena Sriwijaya dan Majapahit memenangkan pertempuran ini dan memiliki banyak uang dari hasil penjarahan (sebanyak 35 juta, belum dipotong pajak) maka pusat meminta kita memasang load balancer untuk membagikan uangnya pada web nya, dengan Kotalingga, Bedahulu, Tanjungkulai sebagai worker dan Solok sebagai Load Balancer menggunakan apache sebagai web server nya dan load balancer nya.
 ## Script @ Solok
 ```
+#!/bin/bash
+
+if ! command -v named &> /dev/null
+then
+    echo "Apache2 belum terinstal, melakukan instalasi..."
+    # Instalasi apache2
+    apt-get update
+    apt-get install apache2 -y
+    apt-get install libapache2-mod-php7.0 -y
+else
+    echo "apache2 sudah terinstal."
+fi
+
+if ! command -v named &> /dev/null
+then
+    echo "PHP belum terinstal, melakukan instalasi..."
+    # Melakukan instalasi php
+    apt-get update
+    apt-get install php -y
+else
+    echo "php sudah terinstal."
+fi
+
+# Enable apache2 module
+a2enmod proxy_balancer
+a2enmod proxy_http
+a2enmod lbmethod_byrequests
 echo '
 <VirtualHost *:80>
-    <Proxy balancer://mycluster>
-        BalancerMember http://192.235.2.6
-        BalancerMember http://192.235.3.3
-        BalancerMember http://192.235.3.4
-        ProxySet lbmethod=byrequests
+    <Proxy balancer://serverpool>
+        BalancerMember http://192.235.3.3/
+        BalancerMember http://192.235.3.4/
+        BalancerMember http://192.235.3.6/
+        Proxyset lbmethod=byrequests
     </Proxy>
-
-    ProxyPass / balancer://mycluster/
-    ProxyPassReverse / balancer://mycluster/
-
-</VirtualHost>
-' > /etc/apache2/sites-available/000-default.conf
+    ProxyPass / balancer://serverpool/
+    ProxyPassReverse / balancer://serverpool/
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
 service apache2 restart
 ```
