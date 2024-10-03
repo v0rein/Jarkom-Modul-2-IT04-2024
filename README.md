@@ -584,3 +584,153 @@ echo ' options {
 
 service bind9 restart
 ```
+
+# No.12
+> Karena pusat ingin sebuah laman web yang ingin digunakan untuk memantau kondisi kota lainnya maka deploy laman web ini (cek resource yg lb) pada Kotalingga menggunakan apache.
+## Script @ Kotalingga, Bedahulu, Tanjungkulai
+```
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt-get update
+apt-get install apache2 libapache2-mod-php7.0 php wget unzip -y
+echo nameserver 192.235.3.1 > /etc/resolv.conf
+echo nameserver 192.235.2.1 >> /etc/resolv.conf
+
+cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/pasopati.it04.com.conf
+
+echo '<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/pasopati.it04.com
+    ServerName pasopati.it04.com
+    ServerAlias www.pasopati.it04.com
+</VirtualHost>' > /etc/apache2/sites-available/pasopati.it04.com.conf
+
+mkdir /var/www/pasopati.it04.com
+
+a2ensite pasopati.it04.com.conf
+
+wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Sqf0TIiybYyUp5nyab4twy9svkgq8bi7' -O lb.zip
+
+unzip lb.zip  -d  lb
+
+mv lb/* /var/www/pasopati.it04.com
+
+cp /var/www/pasopati.it04.com/worker/index.php /var/www/pasopati.it04.com/index.php
+
+cp /var/www/pasopati.it04.com/index.php /var/www/html/index.php
+rm /var/www/html/index.html
+
+service apache2 restart
+```
+
+![image](https://github.com/user-attachments/assets/2fcd3e03-51e8-4a1d-9ac9-0cf410451170)
+
+# No.13
+> Karena Sriwijaya dan Majapahit memenangkan pertempuran ini dan memiliki banyak uang dari hasil penjarahan (sebanyak 35 juta, belum dipotong pajak) maka pusat meminta kita memasang load balancer untuk membagikan uangnya pada web nya, dengan Kotalingga, Bedahulu, Tanjungkulai sebagai worker dan Solok sebagai Load Balancer menggunakan apache sebagai web server nya dan load balancer nya.
+## Script @ Solok
+```
+echo '
+<VirtualHost *:80>
+    <Proxy balancer://mycluster>
+        BalancerMember http://192.235.2.6
+        BalancerMember http://192.235.3.3
+        BalancerMember http://192.235.3.4
+        ProxySet lbmethod=byrequests
+    </Proxy>
+
+    ProxyPass / balancer://mycluster/
+    ProxyPassReverse / balancer://mycluster/
+
+</VirtualHost>
+' > /etc/apache2/sites-available/000-default.conf
+
+service apache2 restart
+```
+![image](https://github.com/user-attachments/assets/f9a56ee5-0075-4839-a267-30f044c10e3d)
+![image](https://github.com/user-attachments/assets/7f951ad9-a268-4437-8492-880263e317f5)
+![image](https://github.com/user-attachments/assets/51ae5f67-b6d1-4902-a2cb-2dd879f6376e)
+
+# No.14
+> Selama melakukan penjarahan mereka melihat bagaimana web server luar negeri, hal ini membuat mereka iri, dengki, sirik dan ingin flexing sehingga meminta agar web server dan load balancer nya diubah menjadi nginx.
+## Script @ Kotalingga, Bedahulu, Tanjungkulai
+```
+apt-get install nginx php-fpm -y
+
+mkdir /var/www/pasopati.it04.com
+
+echo " <?php
+\$hostname = gethostname();
+\$date = date('Y-m-d H:i:s');
+\$php_version = phpversion();
+\$username = get_current_user();
+
+echo \"Hello World!<br\>\";
+echo \"Saya adalah: \$username<br\>\";
+echo \"Saat ini berada di: \$hostname<br\>\";
+echo \"Versi PHP yang saya gunakan: \$php_version<br\>\";
+echo \"Tanggal saat ini: \$date<b\r\>\";
+?>" > /var/www/pasopati.it04.com/index.php
+
+echo '
+ server {
+
+        listen 80;
+
+        root /var/www/pasopati.it04.com;
+
+        index index.php index.html index.htm;
+        server_name _;
+
+        location / {
+                        try_files $uri $uri/ /index.php?$query_string;
+        }
+
+        # pass PHP scripts to FastCGI server
+        location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+        }
+
+        location ~ /\.ht {
+                        deny all;
+        }
+
+        error_log /var/log/nginx/jarkom_error.log;
+        access_log /var/log/nginx/jarkom_access.log;
+ } ' > /etc/nginx/sites-available/pasopati.it04.com
+
+ln -s /etc/nginx/sites-available/pasopati.it04.com /etc/nginx/sites-enabled/pasopati.it04.com
+rm -rf /etc/nginx/sites-enabled/default
+
+service nginx restart
+service php7.0-fpm stop
+service php7.0-fpm start
+```
+## Script @ Solok
+```
+apt-get install nginx -y
+
+echo ' # Default menggunakan Round Robin
+ upstream webserver  {
+       server 192.235.2.6;
+       server 192.235.3.3;
+       server 192.235.3.4;
+ }
+
+ server {
+        listen 80;
+        server_name _;
+
+        location / {
+        proxy_pass http://webserver;
+        }
+ }' > /etc/nginx/sites-available/solok
+
+ln -s /etc/nginx/sites-available/solok /etc/nginx/sites-enabled/solok
+
+rm -rf /etc/nginx/sites-enabled/default
+
+service nginx restart
+```
+![image](https://github.com/user-attachments/assets/033f9ba5-8a5b-4593-a39a-4256593908d8)
+![image](https://github.com/user-attachments/assets/2b4641f9-289a-4b5e-af91-0adf4fa53ca0)
+![image](https://github.com/user-attachments/assets/cae3244e-2edf-4b1c-8c6d-d849bb5aee16)
