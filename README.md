@@ -299,6 +299,12 @@ service bind9 restart
 # No.5
 > Pastikan domain-domain tersebut dapat diakses oleh seluruh komputer (client) yang berada di Nusantara.
 
+![Screenshot 2024-10-02 010503](https://github.com/user-attachments/assets/7a16708f-96b8-4710-9444-e44667408261)
+![Screenshot 2024-10-02 010714](https://github.com/user-attachments/assets/829628e6-06dd-456e-a1f4-0df7a994ffbf)
+![Screenshot 2024-10-02 011006](https://github.com/user-attachments/assets/27b310e0-20fb-47f0-83f0-dea11adfe4ad)
+![Screenshot 2024-10-02 011238](https://github.com/user-attachments/assets/684621bb-b66d-4bfc-9331-aa14dd42e77c)
+
+
 # No. 6
 > Beberapa daerah memiliki keterbatasan yang menyebabkan hanya dapat mengakses domain secara langsung melalui alamat IP domain tersebut. Karena daerah tersebut tidak diketahui secara spesifik, pastikan semua komputer (client) dapat mengakses domain pasopati.xxxx.com melalui alamat IP Kotalingga (Notes: menggunakan pointer record).
 
@@ -330,6 +336,10 @@ $TTL    604800
 
 service bind9 restart
 ```
+![image](https://github.com/user-attachments/assets/40772d64-62bc-49fe-af6b-25158a8fdfe8)
+![image](https://github.com/user-attachments/assets/cb07eab6-fde7-4320-9e93-d49c897309d2)
+![image](https://github.com/user-attachments/assets/3d5c4efd-5fbc-4c5e-951f-517893ad8e13)
+![image](https://github.com/user-attachments/assets/f64bd815-7b86-4c19-bb4f-e4e1d7cc0243)
 
 # No. 7
 > Akhir-akhir ini seringkali terjadi serangan brainrot ke DNS Server Utama, sebagai tindakan antisipasi kamu diperintahkan untuk membuat DNS Slave di Majapahit untuk semua domain yang sudah dibuat sebelumnya yang mengarah ke Sriwijaya.
@@ -408,6 +418,11 @@ www     IN      CNAME   rujapala.it04.com.' > /var/lib/bind/rujapala.it04.com
 # Restart BIND9 service to apply changes
 service bind9 restart
 ```
+![image](https://github.com/user-attachments/assets/f99a0b66-e2dc-498d-bc70-2185c9a27a4c)
+![image](https://github.com/user-attachments/assets/2beabc06-6aab-423b-9fa0-9187e366e15d)
+![image](https://github.com/user-attachments/assets/e29923cc-f2de-439d-b310-64a2d113f3c4)
+![image](https://github.com/user-attachments/assets/99e52deb-0ac8-45a2-9095-4fb965b182b5)
+
 
 # No. 8
 > Kamu juga diperintahkan untuk membuat subdomain khusus melacak kekuatan tersembunyi di Ohio dengan subdomain cakra.sudarsana.xxxx.com yang mengarah ke Bedahulu.
@@ -434,6 +449,11 @@ www     IN      CNAME   sudarsana.it04.com.' > /etc/bind/it04/sudarsana.it04.com
 
 service bind9 restart
 ```
+![image](https://github.com/user-attachments/assets/f75c1ed6-b821-42e1-b7fe-9e42540aff9c)
+![image](https://github.com/user-attachments/assets/556ea38c-ca05-4ed1-b23a-f93a66d1923f)
+![image](https://github.com/user-attachments/assets/8fc341e2-d0db-498d-bd0f-905aabcaeb71)
+![image](https://github.com/user-attachments/assets/b484e3eb-2d5a-4b12-9e60-6606b395b718)
+
 
 # No. 9
 > Karena terjadi serangan DDOS oleh shikanoko nokonoko koshitantan (NUN), sehingga sistem komunikasinya terhalang. Untuk melindungi warga, kita diperlukan untuk membuat sistem peringatan dari siren man oleh Frekuensi Freak dan memasukkannya ke subdomain panah.pasopati.xxxx.com dalam folder panah dan pastikan dapat diakses secara mudah dengan menambahkan alias www.panah.pasopati.xxxx.com dan mendelegasikan subdomain tersebut ke Majapahit dengan alamat IP menuju radar di Kotalingga.
@@ -508,6 +528,10 @@ www     IN      CNAME   panah.pasopati.it04.com.' > /etc/bind/it04/panah.pasopat
 
 service bind9 restart
 ```
+![image](https://github.com/user-attachments/assets/6f36c10f-eeaa-4f62-a8f8-536f9480e689)
+![image](https://github.com/user-attachments/assets/78bb4101-01ed-428d-ad17-7581cbc0b0c7)
+![image](https://github.com/user-attachments/assets/789eabd2-6914-423d-94fa-31ad861d2f2e)
+![image](https://github.com/user-attachments/assets/ea0191af-67c1-4f5e-9cff-61e2375ba0ac)
 
 # No. 10
 > Markas juga meminta catatan kapan saja meme brain rot akan dijatuhkan, maka buatlah subdomain baru di subdomain panah yaitu log.panah.pasopati.xxxx.com serta aliasnya www.log.panah.pasopati.xxxx.com yang juga mengarah ke Kotalingga.
@@ -535,6 +559,10 @@ www.log.panah   IN    CNAME   log.panah.pasopati.it04.com.' > /etc/bind/it04/pas
 
 service bind9 restart
 ```
+![image](https://github.com/user-attachments/assets/bbbb8e25-2f7a-46d0-988b-0a3f8becb569)
+![image](https://github.com/user-attachments/assets/cc722ecf-2cc3-4f18-8a89-48d15e064474)
+![image](https://github.com/user-attachments/assets/22fef1ee-9266-49a8-9a0b-d8b9e4754d69)
+![image](https://github.com/user-attachments/assets/1c684c3a-935a-4ffc-a04d-aa42b147dbb9)
 
 # No. 11
 > Setelah pertempuran mereda, warga IT dapat kembali mengakses jaringan luar dan menikmati meme brainrot terbaru, tetapi hanya warga Majapahit saja yang dapat mengakses jaringan luar secara langsung. Buatlah konfigurasi agar warga IT yang berada diluar Majapahit dapat mengakses jaringan luar melalui DNS Server Majapahit.
