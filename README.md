@@ -637,7 +637,7 @@ Script Master dan Slave ( Sriwijaya & Majapahit )
 # tambahkan nameserver IP Kotalingga
 echo '
 nameserver 192.168.122.1
-nameserver 192.235.2.4' > /etc/resolv.conf
+nameserver 192.235.2.6' > /etc/resolv.conf
 ```
 Script Client
 ```
