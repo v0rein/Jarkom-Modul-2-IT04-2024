@@ -657,6 +657,10 @@ Mulawarman
 ![Screenshot 2024-10-03 230739](https://github.com/user-attachments/assets/8969824f-9c27-4aea-90c8-5edd2ce99803)
 Samaratungga
 ![Screenshot 2024-10-03 231205](https://github.com/user-attachments/assets/930671e2-2da9-404d-a4b0-b2fecb6647d2)
+Alexandervolta
+![Screenshot 2024-10-03 232009](https://github.com/user-attachments/assets/997566bc-2d30-4fd7-8368-551ef99b2e48)
+Balaraja
+![Screenshot 2024-10-03 232105](https://github.com/user-attachments/assets/ccab7f60-323c-47c7-87a4-c9f6b22dcddb)
 
 
 # No.13
