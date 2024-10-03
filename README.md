@@ -584,42 +584,80 @@ service bind9 restart
 
 # No.12
 > Karena pusat ingin sebuah laman web yang ingin digunakan untuk memantau kondisi kota lainnya maka deploy laman web ini (cek resource yg lb) pada Kotalingga menggunakan apache.
-## Script @ Kotalingga, Bedahulu, Tanjungkulai
+## Script Kotalingga
 ```
-echo nameserver 192.168.122.1 > /etc/resolv.conf
-apt-get update
-apt-get install apache2 libapache2-mod-php7.0 php wget unzip -y
-echo nameserver 192.235.3.1 > /etc/resolv.conf
-echo nameserver 192.235.2.1 >> /etc/resolv.conf
+(Kotalingga)
+#!/bin/bash
 
-cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/pasopati.it04.com.conf
+if ! command -v named &> /dev/null
+then
+    echo "Apache2 belum terinstal, melakukan instalasi..."
+    # Instalasi apache2
+    apt-get update
+    apt-get install apache2 -y
+    apt-get install libapache2-mod-php7.0 -y
+else
+    echo "apache2 sudah terinstal."
+fi
 
-echo '<VirtualHost *:80>
-    ServerAdmin webmaster@localhost
-    DocumentRoot /var/www/pasopati.it04.com
-    ServerName pasopati.it04.com
-    ServerAlias www.pasopati.it04.com
-</VirtualHost>' > /etc/apache2/sites-available/pasopati.it04.com.conf
+if ! command -v named &> /dev/null
+then
+    echo "Unzip belum terinstal, melakukan instalasi..."
+    # Instalasi unzip
+    apt-get update
+    apt-get install unzip -y
+else
+    echo "unzip sudah terinstal."
+fi
 
-mkdir /var/www/pasopati.it04.com
+if ! command -v named &> /dev/null
+then
+    echo "PHP belum terinstal, melakukan instalasi..."
+    # Melakukan instalasi php
+    apt-get update
+    apt-get install php -y
+else
+    echo "php sudah terinstal."
+fi
 
-a2ensite pasopati.it04.com.conf
+curl -L -o lb.zip --insecure "https://drive.google.com/uc?export=download&id=1Sqf0TIiybYyUp5nyab4twy9svkgq8bi7"
 
-wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Sqf0TIiybYyUp5nyab4twy9svkgq8bi7' -O lb.zip
+unzip lb.zip
 
-unzip lb.zip  -d  lb
+rm -rf /var/www/html/index.php
 
-mv lb/* /var/www/pasopati.it04.com
-
-cp /var/www/pasopati.it04.com/worker/index.php /var/www/pasopati.it04.com/index.php
-
-cp /var/www/pasopati.it04.com/index.php /var/www/html/index.php
-rm /var/www/html/index.html
+cp worker/index.php /var/www/html/index.php
 
 service apache2 restart
 ```
+Script Master dan Slave ( Sriwijaya & Majapahit )
+```
+#!/bin/bash
 
-![image](https://github.com/user-attachments/assets/2fcd3e03-51e8-4a1d-9ac9-0cf410451170)
+# tambahkan nameserver IP Kotalingga
+echo '
+nameserver 192.168.122.1
+nameserver 192.235.2.4' > /etc/resolv.conf
+```
+Script Client
+```
+#!/bin/bash
+
+if ! command -v named &> /dev/null
+then
+    echo "Lynx belum terinstal, melakukan instalasi..."
+    # Instalasi lynx
+    apt-get update
+    apt-get install lynx -y
+else
+    echo "lynx sudah terinstal."
+fi
+```
+Mulawarman
+![Screenshot 2024-10-03 230739](https://github.com/user-attachments/assets/8969824f-9c27-4aea-90c8-5edd2ce99803)
+Samaratungga
+![Screenshot 2024-10-03 231205](https://github.com/user-attachments/assets/930671e2-2da9-404d-a4b0-b2fecb6647d2)
+
 
 # No.13
 > Karena Sriwijaya dan Majapahit memenangkan pertempuran ini dan memiliki banyak uang dari hasil penjarahan (sebanyak 35 juta, belum dipotong pajak) maka pusat meminta kita memasang load balancer untuk membagikan uangnya pada web nya, dengan Kotalingga, Bedahulu, Tanjungkulai sebagai worker dan Solok sebagai Load Balancer menggunakan apache sebagai web server nya dan load balancer nya.
