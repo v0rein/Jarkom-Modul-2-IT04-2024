@@ -684,9 +684,10 @@ echo '
 
 service apache2 restart
 ```
-![image](https://github.com/user-attachments/assets/f9a56ee5-0075-4839-a267-30f044c10e3d)
-![image](https://github.com/user-attachments/assets/7f951ad9-a268-4437-8492-880263e317f5)
-![image](https://github.com/user-attachments/assets/51ae5f67-b6d1-4902-a2cb-2dd879f6376e)
+
+https://github.com/user-attachments/assets/a00e931d-3058-4d88-bde5-69d2577b35e9
+
+
 
 # No.14
 > Selama melakukan penjarahan mereka melihat bagaimana web server luar negeri, hal ini membuat mereka iri, dengki, sirik dan ingin flexing sehingga meminta agar web server dan load balancer nya diubah menjadi nginx.
